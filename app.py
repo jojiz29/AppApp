@@ -94,29 +94,5 @@ if model is not None:
         for species, prob in zip(target_names, probabilities):
             st.write(f"- {species}: {prob:.1%}")
 
-#####
-try:
-    connection = psycopg2.connect(
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-        dbname=DBNAME
-    )
-    cursor = connection.cursor()
-    
-    # Insertar los valores en la tabla (suponiendo que tienes una tabla "iris_data")
-    insert_query = """
-    INSERT INTO iris_data (sepal_length, sepal_width, petal_length, petal_width, prediccion)
-    VALUES (%s, %s, %s, %s, %s)
-    """
-    cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, prediccion))
-    
-    connection.commit()
-    cursor.close()
-    connection.close()
-    st.success("✅ Predicción guardada en la base de datos.")
 
-except Exception as e:
-    st.error(f"Error al guardar en la base de datos: {e}")
 
