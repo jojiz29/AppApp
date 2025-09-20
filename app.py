@@ -105,7 +105,7 @@ if st.button("Predecir Especie"):
         cursor = connection.cursor()
 
         insert_query = """
-        INSERT INTO table_iris (sepal_length, sepal_width, petal_length, petal_width, prediction)
+        INSERT INTO table_iris (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction)
         VALUES (%s, %s, %s, %s, %s)
         RETURNING *;
         """
