@@ -16,6 +16,8 @@ st.set_page_config(page_title="Predictor de Iris", page_icon="🌸")
 # Connect to the database
 
 result = None # inicialización
+
+
 try:
     connection = psycopg2.connect(
         user=USER,
@@ -107,7 +109,7 @@ try:
     cursor = connection.cursor()
 
     insert_query = """
-    INSERT INTO iris_data (sepal_length, sepal_width, petal_length, petal_width, prediction)
+    INSERT INTO table_iris (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction)
     VALUES (%s, %s, %s, %s, %s)
     """
     cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, predicted_species))
@@ -116,7 +118,7 @@ try:
     cursor.close()
     connection.close()
 
-    st.success("✅ Predicción guardada en la base de datos.")
+    st.success("✅ Predicción guardada en la tabla table_iris.")
 
 except Exception as e:
     st.error(f"Error al guardar en la base de datos: {e}")
