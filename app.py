@@ -11,7 +11,6 @@ HOST = "aws-1-us-east-2.pooler.supabase.com" #os.getenv("host")
 PORT = "6543" #os.getenv("port")
 DBNAME = "postgres" #os.getenv("dbname")
 
-
 # Configuración de la página
 st.set_page_config(page_title="Predictor de Iris", page_icon="🌸")
 # Connect to the database
