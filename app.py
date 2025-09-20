@@ -74,54 +74,55 @@ if model is not None:
     petal_length = st.number_input("Longitud del Pétalo (cm)", min_value=0.0, max_value=10.0, value=4.0, step=0.1)
     petal_width = st.number_input("Ancho del Pétalo (cm)", min_value=0.0, max_value=10.0, value=1.0, step=0.1)
     
-    # Botón de predicción
-    if st.button("Predecir Especie"):
-        # Preparar datos
-        features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
-        
-        # Estandarizar
-        features_scaled = scaler.transform(features)
-        
-        # Predecir
-        prediction = model.predict(features_scaled)[0]
-        probabilities = model.predict_proba(features_scaled)[0]
-        
-        # Mostrar resultado
-        target_names = model_info['target_names']
-        predicted_species = target_names[prediction]
-        
-        st.success(f"Especie predicha: **{predicted_species}**")
-        st.write(f"Confianza: **{max(probabilities):.1%}**")
-        
-        # Mostrar todas las probabilidades
-        st.write("Probabilidades:")
-        for species, prob in zip(target_names, probabilities):
-            st.write(f"- {species}: {prob:.1%}")
+   
+if st.button("Predecir Especie"):
+    # Preparar datos
+    features = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+    
+    # Estandarizar
+    features_scaled = scaler.transform(features)
+    
+    # Predecir
+    prediction = model.predict(features_scaled)[0]
+    probabilities = model.predict_proba(features_scaled)[0]
+    
+    # Resultado
+    target_names = model_info['target_names']
+    predicted_species = target_names[prediction]
+    
+    st.success(f"Especie predicha: **{predicted_species}**")
+    st.write(f"Confianza: **{max(probabilities):.1%}**")
+    
+    # Guardar en la base de datos
+    try:
+        connection = psycopg2.connect(
+            user=USER,
+            password=PASSWORD,
+            host=HOST,
+            port=PORT,
+            dbname=DBNAME
+        )
+        cursor = connection.cursor()
 
-try:
-    connection = psycopg2.connect(
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-        dbname=DBNAME
-    )
-    cursor = connection.cursor()
+        insert_query = """
+        INSERT INTO table_iris (sepal_length, sepal_width, petal_length, petal_width, prediction)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING *;
+        """
+        cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, predicted_species))
 
-    insert_query = """
-    INSERT INTO table_iris (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction)
-    VALUES (%s, %s, %s, %s, %s)
-    """
-    cursor.execute(insert_query, (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction))
+        # Obtener el registro insertado
+        saved_row = cursor.fetchone()
+        connection.commit()
 
-    connection.commit()
-    cursor.close()
-    connection.close()
+        cursor.close()
+        connection.close()
 
-    st.success("✅ Predicción guardada en la tabla table_iris.")
+        st.code(f"Registro guardado: {saved_row}")
 
-except Exception as e:
-    st.error(f"Error al guardar en la base de datos: {e}")
+    except Exception as e:
+        st.error(f"Error al guardar en la base de datos: {e}")
+
 
 
 
