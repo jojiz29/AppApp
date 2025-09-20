@@ -112,7 +112,7 @@ try:
     INSERT INTO table_iris (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction)
     VALUES (%s, %s, %s, %s, %s)
     """
-    cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, predicted_species))
+    cursor.execute(insert_query, (longitud_petalo, longitud_sepalo, ancho_petalo, ancho_sepalo, prediction))
 
     connection.commit()
     cursor.close()
