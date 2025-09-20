@@ -110,7 +110,7 @@ try:
     INSERT INTO iris_data (sepal_length, sepal_width, petal_length, petal_width, prediccion)
     VALUES (%s, %s, %s, %s, %s)
     """
-    cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, prediccion))
+    cursor.execute(insert_query, (sepal_length, sepal_width, petal_length, petal_width, prediction))
     
     connection.commit()
     cursor.close()
